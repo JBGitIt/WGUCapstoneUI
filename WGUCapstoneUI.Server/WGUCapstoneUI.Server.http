@@ -1,0 +1,6 @@
+@WGUCapstoneUI.Server_HostAddress = http://localhost:5202
+
+GET {{WGUCapstoneUI.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
