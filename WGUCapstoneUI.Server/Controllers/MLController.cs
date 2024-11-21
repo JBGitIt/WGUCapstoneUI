@@ -2,43 +2,37 @@
 using Microsoft.AspNetCore.Mvc;
 using RandomForest;
 using System.Data;
+using WGUCapstoneUI.Server.Classes;
+using Newtonsoft.Json;
+using Microsoft.Data.SqlClient;
 
 namespace WGUCapstoneUI.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class MLController : ControllerBase
     {
-        public string GetRawData()
+        string l_STRapiKey = "10048f9b5d22064ad5b617fafce15bb4";
+        List<string> l_COLLquarterlySeries = new List<string> { "EXPGS", "GDP", "IMPGS", };
+
+        [HttpGet("raw")]
+        public IActionResult GetRawData(string l_STRseries)
         {
+            DataTable l_OBJtable = new DataTable();
+            l_OBJtable.Columns.Add("date", Type.GetType("System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"));
+            l_OBJtable.Columns.Add("value", Type.GetType("System.Double"));
+
+            HashSet<KeyValuePair<DateTime, double>> l_COLLobservations = new HashSet<KeyValuePair<DateTime, double>>();
+
             using (HttpClient l_OBJclient = new HttpClient())
             {
                 HttpResponseMessage l_OBJresponse = l_OBJclient.GetAsync($"https://api.stlouisfed.org/fred/series/observations?series_id={l_STRseries}&sort_order=asc&api_key={l_STRapiKey}&file_type=json").GetAwaiter().GetResult();
 
-                if (l_BOOLverbose)
-                {
-                    Console.WriteLine($"\nFRED HTTP Response code: {l_OBJresponse.StatusCode}");
-                    if (l_OBJresponse.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        Console.WriteLine($"\nAttempting to parse results...");
-                    }
-                }
-
                 FREDOut l_OBJapiOutput = JsonConvert.DeserializeObject<FREDOut>(l_OBJresponse.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-
-                if (l_BOOLverbose)
-                {
-                    Console.WriteLine($"\nTotal observations returned and parsed: {l_OBJapiOutput.observations.Count}");
-
-                    if (l_OBJapiOutput.observations.Count > 0)
-                    {
-                        Console.WriteLine($"\nAttempting to build table...");
-                    }
-                }
 
                 double l_DBLvalue = 0;
                 DateTime l_OBJdt = DateTime.Now;
-                HashSet<KeyValuePair<DateTime, double>> l_COLLobservations = l_OBJapiOutput.observations.Where(row => { return (double.TryParse(row.value, out l_DBLvalue) && DateTime.TryParse(row.date, out l_OBJdt)); })
+                l_COLLobservations = l_OBJapiOutput.observations.Where(row => { return (double.TryParse(row.value, out l_DBLvalue) && DateTime.TryParse(row.date, out l_OBJdt)); })
                     .Select(row =>
                     {
                         return new KeyValuePair<DateTime, double>(DateTime.Parse(row.date), double.Parse(row.value));
@@ -50,30 +44,55 @@ namespace WGUCapstoneUI.Server.Controllers
                 }
             }
 
-            if (l_BOOLverbose)
-            {
-                Console.WriteLine("\nAttempting to Connect to SQL");
-            }
-
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True;"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True;Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
-
-                if (l_BOOLverbose)
-                {
-                    Console.WriteLine($"\n Writing to table: WGUCapstone.dbo.{l_STRseries}");
-                }
 
                 SqlCommand l_OBJsqlComm = new SqlCommand($"ins{l_STRseries}", l_OBJsqlConn);
                 l_OBJsqlComm.Parameters.Add(new SqlParameter("@apiRecord", l_OBJtable));
                 l_OBJsqlComm.CommandType = CommandType.StoredProcedure;
                 int l_INTrowsOut = l_OBJsqlComm.ExecuteNonQuery();
-
-                if (l_BOOLverbose)
-                {
-                    Console.WriteLine($"\n{l_INTrowsOut} rows written");
-                }
             }
+
+            return Ok(l_COLLobservations.ToList());
+        }
+
+        [HttpGet("adjusted")]
+        public IActionResult TimeAdjustData(string l_STRseries)
+        {
+            DataTable l_OBJreturnTable = new DataTable();
+            l_OBJreturnTable.Columns.Add(new DataColumn("Date", Type.GetType("System.DateTime")));
+            l_OBJreturnTable.Columns.Add(new DataColumn("Value", Type.GetType("System.Decimal")));
+
+            using (SqlConnection l_OBJsqlConn = new SqlConnection())
+            {
+                l_OBJsqlConn.Open();
+
+                SqlCommand l_OBJsqlComm = l_OBJsqlConn.CreateCommand();
+
+                l_OBJsqlComm.CommandText = $"ins{l_STRseries}Adjusted";
+
+                l_OBJsqlComm.CommandType = CommandType.StoredProcedure;
+
+                using (SqlDataReader l_OBJsqlDataRdr = l_OBJsqlComm.ExecuteReader())
+                {
+                    while (l_OBJsqlDataRdr.Read())
+                    {
+                        DataRow l_OBJnewRow = l_OBJreturnTable.NewRow();
+                        l_OBJnewRow.SetField("Date", l_OBJsqlDataRdr.GetDateTime(0));
+                        l_OBJnewRow.SetField("Value", l_OBJsqlDataRdr.GetDecimal(1));
+                        l_OBJreturnTable.Rows.Add(l_OBJnewRow);
+                    }
+                }
+
+                l_OBJsqlConn.Close();
+            }
+
+            return Ok(l_OBJreturnTable.AsEnumerable().Select(row => new
+            {
+                 Date = row["Date"]
+                ,Value = row["Value"]
+            }).ToList());
         }
     }
 }
