@@ -22,7 +22,7 @@ function Data() {
                 <h3>Data Explanation</h3>
                 <p>For the storage, manipulation, and correlation of the selected datasets, I chose to use T-SQL. The database also houses different versions of the model as they are trained and validated. Below is a Database Diagram for the constructed database.</p>
                 <img src={DBDiagram} alt="Database Diagram" style={{ width: '100%' }} />
-                <p>The SQL statements to create the database structure are available on the GitHub GITHUBLINKREQUIRED</p>
+                <p>The SQL statements to create the database structures are available on my </p><a href="https://github.com/JBGitIt/WGUCapstoneUI/tree/master/WGUCapstoneUI.Server/SQL">GitHub</a>
             </MainContent>
         </div>
     );
