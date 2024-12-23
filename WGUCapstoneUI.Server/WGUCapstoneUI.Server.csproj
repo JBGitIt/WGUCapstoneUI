@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <Reference Include="RandomForest">
-      <HintPath>..\..\WGUCapstoneMLTEST\RandomForest\bin\Release\net8.0\RandomForest.dll</HintPath>
+      <HintPath>..\..\WGUCapstoneMLTEST\RandomForest\bin\Debug\net8.0\RandomForest.dll</HintPath>
     </Reference>
   </ItemGroup>
 

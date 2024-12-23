@@ -12,3 +12,9 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+.dropdown-menu li:hover {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text on hover */
+    cursor: pointer;
+}

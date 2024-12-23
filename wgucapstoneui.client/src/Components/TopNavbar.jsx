@@ -1,20 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function TopNavbar() {
+function TopNavbar({Links, Active }) {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow sticky-top">
             <div className="container-fluid">
                 <a className="navbar-brand" href="/">Home</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div>
-                    <ul className="collapse navbar-collapse" id="topNavbar">
+                <div className="navbar-nav" id="topNavbar">
+                    <ul className="navbar-nav d-flex flex-row align-items-left gap-3">
                         <li className="nav-item">
-                            <a className="nav-link" href="/about">About</a>
+                            <a className="nav-link" href="/Data">Data</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/services">Services</a>
+                            <a className="nav-link" href="/Model">Model</a>
                         </li>
                     </ul>
                 </div>
@@ -22,5 +20,9 @@ function TopNavbar() {
         </nav>
     );
 }
+
+/*TopNavBar.PropTypes = {
+
+}*/
 
 export default TopNavbar;

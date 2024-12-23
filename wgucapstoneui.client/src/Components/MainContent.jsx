@@ -1,14 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-function MainContent(){
+function MainContent(props){
     return(
-        <div className="p-3 flex-grow-1 vh-100" style={{ backgroundColor: 'white' }}>
+        <div className="p-3 flex-grow-1 min-vh-100" style={{ backgroundColor: 'white' }}>
             <div>
-                <h2>Welcome to the main content area</h2>
-                <p>Lorem ipsom dolor sit amet</p>
+                {props.children}
             </div>
         </div>
     )
+}
+
+MainContent.propTypes = {
+    children: PropTypes.node,
 }
 
 export default MainContent;
