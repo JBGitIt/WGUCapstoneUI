@@ -12,7 +12,7 @@ function Home() {
                     <h2>Welcome to my Capstone Project!</h2>
                     <p>
                         This home page is meant to serve as your guide to all the necessary pieces of the project for your review.
-                        It does not provide a comprehensive review of all code and functions of the project but if there are other pieces you wish to see there is much available throughout this web interface and ALL the code is available on my GitHub GITHUBLINK.
+                        It does not provide a comprehensive review of all code and functions of the project but if there are other pieces you wish to see there is much available throughout this web interface and ALL the code is available on my <a href="https://github.com/JBGitIt/WGUCapstoneUI/tree/master">GitHub</a>.
                     </p>
                     <p>
                         Sections A and B were included with my submission as two Word documents and one Excel sheet. Below are hyperlinks and/or explanations to point you toward the requirements for section C and D.
@@ -108,11 +108,11 @@ function Home() {
                             </p>
                         </li>
                         <li>
-                            <a>Source code and executable files GITHUBLINK</a>
+                            <a href="https://github.com/JBGitIt/WGUCapstoneUI/tree/master">Source code and executable files</a>
                         </li>
                         <li>
                             <h6>A quick-start guide summarizing the steps necssary to install and use the product</h6>
-                            <p>You are in it baby!</p>
+                            <p>No installation necessary. To make use of the model simply navigate <a href="/Model/Visualization">here</a> and pick your model and version (I do not recommend version 1 of any model as these are unvalidated)</p>
                         </li>
                     </ul>
                     <a>Sources</a>

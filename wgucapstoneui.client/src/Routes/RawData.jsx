@@ -56,7 +56,7 @@ function RawData() {
                 <Table data={s_Data} title={s_Series} />
                 <div>
                     <p>
-                        The full code of the API and all its methods is available in the GitHub repository GITHUBLINK. Below is select code from the API pertinent to the extraction of raw data.
+                        The full code of the API and all its methods is available in the GitHub <a href="https://github.com/JBGitIt/WGUCapstoneUI/tree/master/WGUCapstoneUI.Server">repository</a>. Below is select code from the API pertinent to the extraction of raw data.
                     </p>
                     <h3>API Method for Data Extraction</h3>
                     <SyntaxHighlighter language="csharp" style={atomOneDark}>

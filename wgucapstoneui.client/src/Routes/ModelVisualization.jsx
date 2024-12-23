@@ -125,7 +125,7 @@ function Model() {
             <SideNavbar Links={[
                 { link: "/Model", label: "Model Explaination" }
                 , { link: "/Model/Validation", label: "Validating the Model" }
-                , { link: "/Model/Training", label: "Visualizing the Data" }
+                , { link: "/Model/Training", label: "Training the Model" }
             ]} />
             <MainContent>
                 <div className="d-flex">

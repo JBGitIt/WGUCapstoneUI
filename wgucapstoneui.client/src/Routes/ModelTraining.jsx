@@ -27,13 +27,13 @@ function Model() {
             <SideNavbar Links={[
                 { link: "/Model", label: "Model Explaination" }
                 , { link: "/Model/Validation", label: "Validating the Model" }
-                , { link: "/Model/Visualization", label: "Visualizing the Data" }
+                , { link: "/Model/Visualization", label: "Visualizing the Model" }
             ]} />
             <MainContent>
                 <div>
                     <h3>Training the Model</h3>
                     <p>With all our data prepped we can train our model. The below code contains all the methods that create our Decision Trees.
-                       This is all part of the Random Forest C# library that is available on my GitHub GITHUBLINK
+                        This is all part of the Random Forest C# library that is available on my <a href="https://github.com/JBGitIt/WGUCapstone/tree/master/RandomForest">GitHub</a>.
                     </p>
                     <p>This button will train a new model and store it in the database. The Model # and version will appear below the button once trained and you can validate this model on the validation page.</p>
                     <button
@@ -43,7 +43,7 @@ function Model() {
                         onClick={TrainModel}
                     >Train Model</button>
                     {s_modelInfo == null ? null : s_modelInfo == "Training..." ? <p>Training...</p> : <p>Model ID: {s_modelInfo.modelID} | Version: {s_modelInfo.version}</p>}
-                    <h5>This is the parent method of the whole process, it lives in the Arborist class. If you need to see the rest of the Arborist class it can be found on at GITHUBLINK</h5>
+                    <h5>This is the parent method of the whole process, it lives in the Arborist class. If you need to see the rest of the Arborist class it can be found on <a href="https://github.com/JBGitIt/WGUCapstone/blob/master/RandomForest/Arborist.cs">here</a></h5>
                     <SyntaxHighlighter language="csharp" style={atomOneDark} showLineNumbers={true}>
                         {`
         /// <summary>
@@ -83,7 +83,7 @@ function Model() {
             }
         }` }
                     </SyntaxHighlighter>
-                    <h5>The next method is the actual &quot;planting&quot; of the trees. It is called from the above method on line 27 and lives in the Arborist class. The full code of this class can be found at GITHUBLINK</h5>
+                    <h5>The next method is the actual &quot;planting&quot; of the trees. It is called from the above method on line 27 and lives in the Arborist class. The full code of this class can be found <a href="https://github.com/JBGitIt/WGUCapstone/blob/master/RandomForest/Arborist.cs">here</a></h5>
                     <SyntaxHighlighter language="csharp" style={atomOneDark} showLineNumbers={true}>
                         {`
         /// <summary>
@@ -104,7 +104,7 @@ function Model() {
             return l_OBJnewTree;
         }` }
                     </SyntaxHighlighter>
-                    <h5>Next we &quot;grow&quot; our tree. This method is called on line __ in the above method and lives in the DecisionTree class. The full code of this class can be found at GITHUBLINK</h5>
+                    <h5>Next we &quot;grow&quot; our tree. This method is called on line __ in the above method and lives in the DecisionTree class. The full code of this class can be found <a href="https://github.com/JBGitIt/WGUCapstone/blob/master/RandomForest/DecisionTree.cs">here</a></h5>
                     <SyntaxHighlighter language="csharp" style={atomOneDark} showLineNumbers={true}>
                         {` 
         /// <summary>

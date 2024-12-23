@@ -7,7 +7,7 @@ function Model() {
             <SideNavbar Links={[
                 { link: "/Model/Training", label: "Training the Model" }
                 , { link: "/Model/Validation", label: "Validating the Model" }
-                , { link: "/Model/Visualization", label: "Visualizing the Data" }
+                , { link: "/Model/Visualization", label: "Visualizing the Model" }
             ]} />
             <MainContent>
                 <div>
@@ -18,7 +18,7 @@ function Model() {
                        My model is very basic using Gini Impurity to find the best thresholds in each node
                        and testing against ranges for numeric values and each unique value for features that are not numeric in nature.
 
-                       The full code of my model can be found on my GitHub GITHUBLINK.
+                        The full code of my model can be found on my <a href="https://github.com/JBGitIt/WGUCapstone/tree/master/RandomForest">GitHub</a>.
                     </p>
                 </div>
             </MainContent>

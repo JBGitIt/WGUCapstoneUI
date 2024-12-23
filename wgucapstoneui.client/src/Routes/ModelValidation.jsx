@@ -77,7 +77,7 @@ function Model() {
             <SideNavbar Links={[
                 { link: "/Model", label: "Model Explanation" },
                 { link: "/Model/Training", label: "Validating the Model" },
-                { link: "/Model/Visualization", label: "Visualizing the Data" },
+                { link: "/Model/Visualization", label: "Visualizing the Model" },
             ]} />
             <MainContent>
                 <div className="d-flex">
@@ -107,10 +107,10 @@ function Model() {
                     Since we are using time-series data for our model, we used walk-foward validation.
                     In this methodology we train the model on the first half of our available data, then test it against the next available time step.
                     Then we recompile the model including this newest entry and test it on the next time step, wash, rinse, repeat until we have worked through all of our data.
-                    Below you can see the actual code used to validate the model. Full code for every piece of the project is available on my GitHub GITHUBLINK
+                    Below you can see the actual code used to validate the model. Full code for every piece of the project is available on my <a href="https://github.com/JBGitIt/WGUCapstoneUI">GitHub</a>.
                 </p>
                 <h3>Prediction Method</h3>
-                <p>The is also a prediction method on the arborist class but it is just averaging the results from this prediction method. If you&apos;d like to review that and the DecisionTree Predict() method they are available on my GitHub GITHUBLINK</p>
+                <p>The is also a prediction method on the arborist class but it is just averaging the results from this prediction method. If you&apos;d like to review that and the DecisionTree Predict() method they are available on my <a href="https://github.com/JBGitIt/WGUCapstone/tree/master/RandomForest">GitHub</a>.</p>
                 <SyntaxHighlighter language="csharp" style={atomOneDark} showLineNumbers={true}>
                     {`
         /// <summary>
