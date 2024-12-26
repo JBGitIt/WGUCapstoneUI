@@ -53,5 +53,6 @@ export default defineConfig({
             key: fs.readFileSync(keyFilePath),
             cert: fs.readFileSync(certFilePath),
         }
-    }
+    },
+    base: process.env.NODE_ENV === 'production' ? '/CapstoneUI/' : '/',
 })

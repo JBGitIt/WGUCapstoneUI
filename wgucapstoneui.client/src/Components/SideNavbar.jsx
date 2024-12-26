@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 function SideNavbar({ Links }) {
     if (!(Links == null)) {
         return (
@@ -13,9 +14,9 @@ function SideNavbar({ Links }) {
                 }}>
                     <h5>Section Navigation</h5>
                     <ul className="nav flex-column">
-                        {Links.map((Link) => (
-                            <li key={Link.link} className="nav-item">
-                                <a className="nav-link" href={Link.link}>{Link.label}</a>
+                        {Links.map((Linky) => (
+                            <li key={Linky.link} className="nav-item">
+                                <Link className="nav-link" to={Linky.link}>{Linky.label}</Link>
                             </li>
                         ))}
                     </ul>

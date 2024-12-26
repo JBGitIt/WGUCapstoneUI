@@ -7,10 +7,14 @@ import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function Model() {
     const [s_modelInfo, s_setModelInfo] = useState();
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
+
     async function TrainModel() {
         s_setModelInfo("Training...");
         try {
-            const response = await fetch(`/ML/trainmodel`);
+            const response = await fetch(`${APIprefix}ML/trainmodel`);
             if (!response.ok) {
                 throw new Error('Not ok bro. Sad face');
             }

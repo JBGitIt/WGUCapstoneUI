@@ -17,11 +17,14 @@ function Model() {
     const [s_formData, s_setFormData] = useState({ BUSLOANS: "", CPIAUCSL: "", DPRIME: "", DPSACBW027SBOG: "", EXPGS: "", IMPGS: "", RHEACBW027SBOG: "", TLRESCONS: "", UNRATE: "", GDP: "" });
     const [s_prediction, s_setPrediction] = useState();
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
+
     // Fetch models and versions on mount
     useEffect(() => {
         async function GetModels() {
             try {
-                const response = await fetch(`/ML/getmodels`);
+                const response = await fetch(`${APIprefix}ML/getmodels`);
                 if (!response.ok) throw new Error('Failed to fetch models');
                 const models = await response.json();
                 const modelItems = [];
@@ -60,7 +63,7 @@ function Model() {
 
     async function GetData() {
         try {
-            const response = await fetch(`/ML/validateChart?v_INTforestID=${s_ModelNum}&v_INTforestVersion=${s_ModelVersion}`);
+            const response = await fetch(`${APIprefix}ML/validateChart?v_INTforestID=${s_ModelNum}&v_INTforestVersion=${s_ModelVersion}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch validation Data');
             }
@@ -74,7 +77,7 @@ function Model() {
 
     async function GetNewData() {
         try {
-            const response = await fetch(`/ML/mostRecentData`);
+            const response = await fetch(`${APIprefix}ML/mostRecentData`);
             if (!response.ok) {
                 throw new Error('Failed to check for new Data');
             }
@@ -94,7 +97,7 @@ function Model() {
 
     async function GetPrediction() {
         try {
-            const response = await fetch(`/ML/prediction?v_INTforestID=${s_ModelNum}&v_INTforestVersion=${s_ModelVersion}&v_DECbusLoans=${s_formData.BUSLOANS}&v_DECcPIAUCSL=${s_formData.CPIAUCSL}&v_DECdPrime=${s_formData.DPRIME}&v_DECdPSACBW027SBOG=${s_formData.DPSACBW027SBOG}&v_DECeXPGS=${s_formData.EXPGS}&v_DECiMPGS=${s_formData.IMPGS}&v_DECrHEACBW027SBOG=${s_formData.RHEACBW027SBOG}&v_DECtLRESCONS=${s_formData.TLRESCONS}&v_DECuNRATE=${s_formData.UNRATE}&v_DECgDP=${s_formData.GDP}`)
+            const response = await fetch(`${APIprefix}ML/prediction?v_INTforestID=${s_ModelNum}&v_INTforestVersion=${s_ModelVersion}&v_DECbusLoans=${s_formData.BUSLOANS}&v_DECcPIAUCSL=${s_formData.CPIAUCSL}&v_DECdPrime=${s_formData.DPRIME}&v_DECdPSACBW027SBOG=${s_formData.DPSACBW027SBOG}&v_DECeXPGS=${s_formData.EXPGS}&v_DECiMPGS=${s_formData.IMPGS}&v_DECrHEACBW027SBOG=${s_formData.RHEACBW027SBOG}&v_DECtLRESCONS=${s_formData.TLRESCONS}&v_DECuNRATE=${s_formData.UNRATE}&v_DECgDP=${s_formData.GDP}`)
             if (!response.ok) {
                 throw new Error('Failed to get prediction');
             }

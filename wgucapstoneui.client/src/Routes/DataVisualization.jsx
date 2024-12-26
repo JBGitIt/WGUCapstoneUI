@@ -9,11 +9,14 @@ function DataVisualization() {
     const [s_Series, s_setSeries] = useState("GDP");
     const [s_Data, s_setData] = useState(undefined);
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
+
     useEffect(() => {
         s_setData(["Loading"]);
         async function GetData() {
             try {
-                const response = await fetch(`/ML/raw?l_STRseries=${s_Series}`);
+                const response = await fetch(`${APIprefix}ML/raw?l_STRseries=${s_Series}`);
                 if (!response.ok) {
                     throw new Error('Not ok bro. Sad face');
                 }

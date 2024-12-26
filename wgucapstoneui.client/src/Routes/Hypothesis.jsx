@@ -9,10 +9,13 @@ function DataVisualization() {
     const [s_pieData, s_setPieData] = useState(undefined);
     var combinedData = useRef();
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
+
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`/ML/validate?v_INTforestID=2034&v_INTforestVersion=2`);
+                const response = await fetch(`${APIprefix}ML/validate?v_INTforestID=2034&v_INTforestVersion=2`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch data');

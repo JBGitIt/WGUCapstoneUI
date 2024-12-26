@@ -11,13 +11,16 @@ function AdjustData() {
     const [s_Data, s_setData] = useState();
     const [s_adjusted, s_setAdjusted] = useState(false);
 
+    const isProduction = process.env.NODE_ENV === 'production';
+    const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
+
     useEffect(() => {
         if (s_Series != null) {
             s_setData("Loading");
             s_setAdjusted(false);
             async function GetRawData() {
                 try {
-                    const response = await fetch(`/ML/raw?l_STRseries=${s_Series}`);
+                    const response = await fetch(`${APIprefix}ML/raw?l_STRseries=${s_Series}`);
                     if (!response.ok) {
                         throw new Error('Not ok bro. Sad face');
                     }
@@ -36,7 +39,7 @@ function AdjustData() {
     async function GetAdjustedData() {
         s_setData("Loading");
         try {
-            const response = await fetch(`/ML/adjusted?l_STRseries=${s_Series}`);
+            const response = await fetch(`${APIprefix}ML/adjusted?l_STRseries=${s_Series}`);
             if (!response.ok) {
                 throw new Error('Not ok bro. Sad face');
             }

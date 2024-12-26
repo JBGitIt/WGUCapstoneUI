@@ -16,7 +16,24 @@ namespace WGUCapstoneUI.Server.Controllers
     public class MLController : ControllerBase
     {
         string l_STRapiKey = "10048f9b5d22064ad5b617fafce15bb4";
+        string l_STRservName = "";
         List<string> l_COLLquarterlySeries = new List<string> { "EXPGS", "GDP", "IMPGS", };
+        private readonly IHostEnvironment _env;
+
+        public MLController(IHostEnvironment env)
+        {
+            _env = env;
+            if (_env.IsDevelopment())
+            {
+                l_STRservName = "localhost";
+            }
+            else if (_env.IsProduction())
+            {
+                l_STRservName = "VMI2364899\\SQLEXPRESS";
+            }
+        }
+        
+        
 
         [HttpGet("raw")]
         public IActionResult GetRawData(string l_STRseries)
@@ -53,7 +70,7 @@ namespace WGUCapstoneUI.Server.Controllers
             }
 
             //Connect to the SQL DB
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -73,15 +90,29 @@ namespace WGUCapstoneUI.Server.Controllers
         }
 
         [HttpGet("adjusted")]
-        public IActionResult TimeAdjustData(string l_STRseries)
+        public async Task<IActionResult> TimeAdjustData(string l_STRseries, CancellationToken cancellationToken)
         {
+            string[] l_ARRlongRunners = { "EXPGS", "GDP", "IMPGS" };
+
+            CancellationToken l_OBJusedToken = cancellationToken;
+
+            if (l_ARRlongRunners.Contains(l_STRseries))
+            {
+                using CancellationTokenSource l_OBJcts = new CancellationTokenSource(TimeSpan.FromSeconds(180));
+                using CancellationTokenSource l_OBJlinkedCTS = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, l_OBJcts.Token);
+
+                l_OBJusedToken = l_OBJlinkedCTS.Token;
+            }
+
+
+            //method code
             //DataTable object to hold the data we are returning
             DataTable l_OBJreturnTable = new DataTable();
             l_OBJreturnTable.Columns.Add(new DataColumn("Date", Type.GetType("System.DateTime")));
             l_OBJreturnTable.Columns.Add(new DataColumn("Value", Type.GetType("System.Decimal")));
 
             //Call SQL stored procedure to adjust the data to match the Master dates
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -91,7 +122,9 @@ namespace WGUCapstoneUI.Server.Controllers
 
                 l_OBJsqlComm.CommandType = CommandType.StoredProcedure;
 
-                using (SqlDataReader l_OBJsqlDataRdr = l_OBJsqlComm.ExecuteReader())
+                l_OBJsqlComm.CommandTimeout = 180;
+
+                using (SqlDataReader l_OBJsqlDataRdr = await l_OBJsqlComm.ExecuteReaderAsync(l_OBJusedToken))
                 {
                     //Feed our resultant data into our Datatable
                     while (l_OBJsqlDataRdr.Read())
@@ -153,7 +186,7 @@ namespace WGUCapstoneUI.Server.Controllers
             l_OBJreturnTable.Columns.Add(new DataColumn("T3_GDPBillions", Type.GetType("System.Decimal")));
             l_OBJreturnTable.Columns.Add(new DataColumn("T3_GDPPercentChange", Type.GetType("System.Decimal")));
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -262,7 +295,7 @@ namespace WGUCapstoneUI.Server.Controllers
             DataTable l_OBJtrainingDatesTbl = new DataTable();
             l_OBJtrainingDatesTbl.Columns.Add(new DataColumn("T2_Date", Type.GetType("System.DateTime")));
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -291,7 +324,7 @@ namespace WGUCapstoneUI.Server.Controllers
             int l_INTrfID = 0;
             int l_INTrfVer = 0;
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
                 SqlCommand l_OBJsqlComm = l_OBJsqlConn.CreateCommand();
@@ -329,7 +362,7 @@ namespace WGUCapstoneUI.Server.Controllers
         {
             Dictionary<int, List<ForestFromDB>> l_COLLmodelsAndVersions = new Dictionary<int, List<ForestFromDB>>();
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
                 SqlCommand l_OBJsqlComm = l_OBJsqlConn.CreateCommand();
@@ -373,7 +406,7 @@ namespace WGUCapstoneUI.Server.Controllers
 
             //throw new NotImplementedException();
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -388,7 +421,7 @@ namespace WGUCapstoneUI.Server.Controllers
                 BuildTrainingSets(l_OBJsqlCmd, ref l_COLLtestData, ref l_COLLtestClassifications, ref l_COLLtestDates, ref l_COLLtestDataAmounts, ref l_COLLtestClassAmounts);
             }
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
                 SqlCommand l_OBJsqlCommand = l_OBJsqlConn.CreateCommand();
@@ -464,7 +497,7 @@ namespace WGUCapstoneUI.Server.Controllers
             decimal l_DECaccuracy = 0m;
             if (l_OBJpredictionTable.Rows.Count > 0)
             {
-                using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+                using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
                 {
                     l_OBJsqlConn.Open();
 
@@ -486,7 +519,7 @@ namespace WGUCapstoneUI.Server.Controllers
                     }
                 }
 
-                using (SqlConnection l_OBJsqlConnection = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+                using (SqlConnection l_OBJsqlConnection = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
                 {
                     l_OBJsqlConnection.Open();
 
@@ -511,7 +544,7 @@ namespace WGUCapstoneUI.Server.Controllers
             }
             else
             {
-                using (SqlConnection l_OBJsqlConnection = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+                using (SqlConnection l_OBJsqlConnection = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
                 {
                     l_OBJsqlConnection.Open();
                     SqlCommand l_OBJsqlComm = l_OBJsqlConnection.CreateCommand();
@@ -573,7 +606,7 @@ namespace WGUCapstoneUI.Server.Controllers
             l_OBJpredictionTable.Columns.Add("Actual", Type.GetType("System.Double"));
             l_OBJpredictionTable.Columns.Add("isCorrect", Type.GetType("System.Boolean"));
 
-            using (SqlConnection l_OBJsqlConnection = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConnection = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConnection.Open();
                 SqlCommand l_OBJsqlComm = l_OBJsqlConnection.CreateCommand();
@@ -625,7 +658,7 @@ namespace WGUCapstoneUI.Server.Controllers
 
             DateTime l_OBJmostRecentDate = DateTime.Now;
             
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName}; Database=WGUCapstone; Integrated Security=True; Trust Server Certificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -706,7 +739,7 @@ namespace WGUCapstoneUI.Server.Controllers
             List<object> l_COLLpredictionValues = new List<object>();
             decimal l_DEClastGDP = 0m;
 
-            using (SqlConnection l_OBJsqlConnection = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConnection = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConnection.Open();
                 SqlCommand l_OBJsqlCmd = l_OBJsqlConnection.CreateCommand();
@@ -811,7 +844,7 @@ namespace WGUCapstoneUI.Server.Controllers
 
             l_OBJdataTable.Rows.Add(l_OBJnewRow);
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
                 SqlCommand l_OBJsqlComm = l_OBJsqlConn.CreateCommand();
@@ -842,7 +875,7 @@ namespace WGUCapstoneUI.Server.Controllers
             IEnumerable<object> l_COLLdataAmounts = new List<object>();
             IEnumerable<DateTime> l_COLLdates = new List<DateTime>();
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
 
@@ -859,7 +892,7 @@ namespace WGUCapstoneUI.Server.Controllers
             }
             Arborist l_OBJreturnArborist = new Arborist(l_COLLdata, l_COLLclassifications, 1000, 100, 2);
 
-            using (SqlConnection l_OBJsqlConn = new SqlConnection("Server=localhost;Database=WGUCapstone;Integrated Security=SSPI;TrustServerCertificate=True"))
+            using (SqlConnection l_OBJsqlConn = new SqlConnection($"Server={l_STRservName};Database=WGUCapstone;Integrated Security=True;TrustServerCertificate=True"))
             {
                 l_OBJsqlConn.Open();
 

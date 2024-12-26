@@ -6,13 +6,16 @@ import Table from '../Components/Table';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 function AdjustData() {
-    const [s_Data, s_setData] = useState();
+	const [s_Data, s_setData] = useState();
+
+	const isProduction = process.env.NODE_ENV === 'production';
+	const APIprefix = isProduction ? '/CapstoneUIAPI/' : '/';
 
 	async function PrepData() {
         s_setData("Loading");
         async function GetData() {
             try {
-                const response = await fetch(`/ML/suplearn`);
+                const response = await fetch(`${APIprefix}ML/suplearn`);
                 if (!response.ok) {
                     throw new Error('Not ok bro. Sad face');
                 }

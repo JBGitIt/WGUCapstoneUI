@@ -21,11 +21,16 @@ import Hypothesis from './Routes/Hypothesis';
 
 
 function App() {
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    const baseName = isProduction ? '/CapstoneUI/' : '/';
+
     return (
+        <BrowserRouter basename={baseName}>
         <div className="d-flex flex-column min-vh-100">
             <Header />
             <TopNavbar />
-            <BrowserRouter>
+            
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/Data" element={<Data />} />
@@ -38,19 +43,11 @@ function App() {
                     <Route path="/Model/Training" element={<ModelTraining />} />
                     <Route path="/Model/Validation" element={<ModelValidation />} />
                     <Route path="/Model/Visualization" element={<ModelVisualization />} />
+                    <Route path="*" element={<Home />} />
                 </Routes>
-            </BrowserRouter>
             <Footer />
         </div>
-        //<div className="d-flex flex-column min-vh-100">
-        //    <Header />
-        //    <TopNavbar />
-        //    <div className="d-flex flex-grow-1">
-        //        <SideNavbar />
-        //        <MainContent />
-        //    </div>
-        //    <Footer />
-        //</div>
+        </BrowserRouter>
     );
 }
 
