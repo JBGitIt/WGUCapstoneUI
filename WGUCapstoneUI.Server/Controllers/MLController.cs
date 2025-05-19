@@ -15,7 +15,7 @@ namespace WGUCapstoneUI.Server.Controllers
     [ApiController]
     public class MLController : ControllerBase
     {
-        string l_STRapiKey = "10048f9b5d22064ad5b617fafce15bb4";
+        string l_STRapiKey = "";
         string l_STRservName = "";
         List<string> l_COLLquarterlySeries = new List<string> { "EXPGS", "GDP", "IMPGS", };
         private readonly IHostEnvironment _env;
